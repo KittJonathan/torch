@@ -222,4 +222,76 @@ t2
 t$storage()$data_ptr()
 t2$storage()$data_ptr()
 
-# 3.5.1 Zero-copy reshaping vs. reshaping with copy
+## Zero-copy reshaping vs. reshaping with copy ----
+
+# Create a 3x5 matrix
+t <- torch_tensor(matrix(1:15, nrow = 3, byrow = TRUE))
+t
+
+# stride() tracks, for every dimension, how many elements have to be traversed
+# to arrive at its next element.
+t$stride()
+
+# Reshape the tensor
+t2 <- t$view(c(5, 3))
+t2
+t2$stride()
+
+# Transpose the matrix
+t3 <- t$t()
+t3
+
+t$storage()$data_ptr()
+t3$storage()$data_ptr()
+
+t3$stride()
+
+# squeeze() adds a singleton dimension at the requested position
+t <- torch_randn(3)
+t
+
+t$unsqueeze(1)
+
+t <- torch_randn(3, 3)
+t
+t$t()$view(9)
+
+t <- torch_randn(3, 3)
+t2 <- t$t()$reshape(9)
+
+t$storage()$data_ptr()
+t2$storage()$data_ptr()
+
+# Broadcasting ----
+
+# Multiply every element by a scalar
+t1 <- torch_randn(3, 5)
+t1
+t1 * 0.5
+
+m <- matrix(1:15, ncol = 5, byrow = TRUE)
+m2 <- matrix(1:5, ncol = 5, byrow = TRUE)
+
+m
+m2
+
+m + m2
+
+m3 <- 1:5
+
+m
+m3
+
+m + m3
+
+t <- torch_tensor(m)
+t2 <- torch_tensor(m2)
+
+t$shape
+t2$shape
+
+t$add(t2)
+
+t3 <- torch_tensor(m3)
+t3$shape
+t$add(t3)
